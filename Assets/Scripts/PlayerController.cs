@@ -3,9 +3,10 @@
 public class PlayerController : MonoBehaviour
 {
     public Rigidbody2D rb;
+    private ParticleSystem particle;
     public Camera mainCamera;
     public float movementSpeed = 40.0f;
-    //internal bool canShoot = true;
+    internal bool canShoot = true;
     public GameObject BulletSpawner;
     public GameObject BulletPrefab;
     public float bulletSpeed = 30.0f;
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = this.gameObject.GetComponent<Rigidbody2D>();
+        particle = this.gameObject.GetComponent<ParticleSystem>();
         mainCamera = Camera.main;
     }
 
@@ -39,7 +41,7 @@ public class PlayerController : MonoBehaviour
     {
         time += Time.deltaTime;
 
-        if(/*canShoot &&*/ time >= 0.5f)
+        if(canShoot && time >= 0.5f)
         {
             Shoot();
             time = 0.0f;
@@ -50,11 +52,24 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         GameObject bullet = Instantiate(BulletPrefab, BulletSpawner.transform.position, Quaternion.identity);
-        bullet.GetComponent<Rigidbody>().velocity = transform.up * bulletSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
+        if(col.tag == "EnemyBullet")
+        {
+            this.Die();
+        }
+    }
 
+    private void Die()
+    {
+        particle.Play();
+        this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        this.canShoot = false;
+        this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        this.gameObject.GetComponent<TrailRenderer>().enabled = false;
+        this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
     }
 }
