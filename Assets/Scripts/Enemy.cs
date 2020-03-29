@@ -50,13 +50,13 @@ public class Enemy : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject bullet = Instantiate(EnemyBulletPrefab, BulletSpawner.transform.position, Quaternion.identity);
+        GameObject bullet = Instantiate(EnemyBulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
         bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
     }
 
-    void OnTriggerEnter2D(Collider2D col)
+    void OnTriggerEnter2D(Collider2D coll)
     {
-        if(col.tag == "PlayerBullet")
+        if(coll.tag == "PlayerBullet" || coll.tag == "Wall")
         {
             this.Die();
         }

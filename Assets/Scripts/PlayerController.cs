@@ -51,13 +51,13 @@ public class PlayerController : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject bullet = Instantiate(BulletPrefab, BulletSpawner.transform.position, Quaternion.identity);
+        GameObject bullet = Instantiate(BulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
         bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
     }
 
-    void OnTriggerEnter2D(Collider2D col)
+    void OnTriggerEnter2D(Collider2D coll)
     {
-        if(col.tag == "EnemyBullet")
+        if(coll.tag == "EnemyBullet" || coll.tag == "Wall")
         {
             this.Die();
         }
