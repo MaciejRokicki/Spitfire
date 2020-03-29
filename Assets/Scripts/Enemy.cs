@@ -3,8 +3,8 @@
 public class Enemy : MonoBehaviour
 {
 
+    private bool isRead = false;
     private Rigidbody2D rb;
-    private ParticleSystem particle;
     private GameObject Player;
     public float movementSpeed = 40.0f;
 
@@ -15,7 +15,6 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         rb = this.gameObject.GetComponent<Rigidbody2D>();
-        particle = this.gameObject.GetComponent<ParticleSystem>();
         Player = GameObject.FindGameObjectWithTag("Player");
         
         foreach(Transform t in this.transform)
@@ -27,50 +26,56 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        Vector3 target = Player.transform.position - this.transform.position;
+        this.Prepare();
+    }
 
+    private void Update()
+    {
+        Shoot();
+    }
+
+    private Vector3 target;
+    private void Prepare()
+    {
+        target = Player.transform.position - this.transform.position;
         float angle = Mathf.Atan2(target.y, target.x) *Mathf.Rad2Deg;
         this.transform.rotation = Quaternion.AngleAxis(angle - 90.0f, Vector3.forward);
+    }
 
+    public void Move()
+    {
+        this.isRead = true;
         this.rb.AddForce(target.normalized * movementSpeed);
     }
 
     private float timer = 0.0f;
-
-    private void Update()
-    {
-        timer += Time.deltaTime;
-
-        if(timer >= 0.7f)
-        {
-            timer = 0.0f;
-            Shoot();
-        }
-    }
-
     private void Shoot()
     {
-        GameObject bullet = Instantiate(EnemyBulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
-        bullet.transform.SetParent(GameObject.Find("GameManager").GetComponent<GameManager>().LevelObjects);
-        bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
-    }
-
-    private void OnTriggerEnter2D(Collider2D coll)
-    {
-        if(coll.tag == "PlayerBullet" || coll.tag == "Wall")
+        if(this.isRead)
         {
-            this.Die();
+            this.timer += Time.deltaTime;
+
+            if(timer >= 0.7f)
+            {
+                this.timer = 0.0f;
+                GameObject bullet = Instantiate(EnemyBulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
+                bullet.transform.SetParent(GameObject.Find("GameManager").GetComponent<GameManager>().LevelObjects);
+                bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
+            }
         }
     }
 
     public void Die()
     {
-        particle.Play();
+        this.gameObject.GetComponent<Animator>().SetTrigger("death");
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        this.gameObject.GetComponent<Enemy>().enabled = false;
-        this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        this.gameObject.GetComponent<TrailRenderer>().enabled = false;
+        this.isRead = false;
         this.gameObject.GetComponent<PolygonCollider2D>().enabled = false;
         GameObject.Find("GameManager").GetComponent<GameManager>().enemyCount--;
+    }
+
+    public void Destroy()
+    {
+        Destroy(this.gameObject);
     }
 }

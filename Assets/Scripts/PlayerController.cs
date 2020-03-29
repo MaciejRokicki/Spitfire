@@ -4,10 +4,9 @@ public class PlayerController : MonoBehaviour
 {
     private GameManager gameManager;
     public Rigidbody2D rb;
-    private ParticleSystem particle;
     public Camera mainCamera;
+    private bool isDead = false;
     public float movementSpeed = 40.0f;
-    internal bool canShoot = true;
     public GameObject BulletSpawner;
     public GameObject BulletPrefab;
     public float bulletSpeed = 30.0f;
@@ -16,69 +15,65 @@ public class PlayerController : MonoBehaviour
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         rb = this.gameObject.GetComponent<Rigidbody2D>();
-        particle = this.gameObject.GetComponent<ParticleSystem>();
         mainCamera = Camera.main;
     }
 
-    private void Start()
-    {
-
-    }
-
-    private float time = 0.0f;
-
     private void FixedUpdate()
     {
-        var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Quaternion rot = Quaternion.LookRotation(transform.position - mousePosition, Vector3.forward);
-
-        transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
-        rb.angularVelocity = 0;
-        transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 6.0f);
-
-        rb.AddForce(gameObject.transform.up * movementSpeed);
+        Move();
     }
 
     private void Update()
     {
-        time += Time.deltaTime;
-
-        if(canShoot && time >= 0.5f)
-        {
-            Shoot();
-            time = 0.0f;
-        }
-    }
-
-
-    private void Shoot()
-    {
-        GameObject bullet = Instantiate(BulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
-        bullet.transform.SetParent(gameManager.LevelObjects);
-        bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
+        Shoot();
     }
 
     private void OnTriggerEnter2D(Collider2D coll)
     {
-        if(coll.tag == "EnemyBullet" || coll.tag == "Wall" || coll.tag == "Enemy")
+        if(coll.tag == "Enemy")
         {
             this.Die();
         }
     }
 
-    private void Die()
+    private void Move()
     {
-        particle.Play();
-        this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        this.canShoot = false;
-        this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        this.gameObject.GetComponent<TrailRenderer>().enabled = false;
-        this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
-        gameManager.player = null;
+        if(!isDead)
+        {
+            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Quaternion rot = Quaternion.LookRotation(transform.position - mousePosition, Vector3.forward);
+
+            transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
+            rb.angularVelocity = 0;
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 6.0f);
+
+            rb.AddForce(gameObject.transform.up * movementSpeed);
+        }
     }
 
-    public void OnParticleSystemStopped()
+    float time = 0.0f;
+
+    private void Shoot()
+    {          
+        if(!isDead)
+        {
+            time += Time.deltaTime;
+
+            if(time >= 0.5f)
+            {
+                GameObject bullet = Instantiate(BulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
+                bullet.transform.SetParent(gameManager.LevelObjects);
+                bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
+                time = 0.0f;
+            }
+        }
+    }
+
+    public void Die()
     {
-        gameManager.NewGame();
+        this.isDead = true;
+        this.gameObject.GetComponent<Animator>().SetTrigger("death");
+        this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        gameManager.player = null;
     }
 }

@@ -27,7 +27,13 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartGameCourtine()
     {
-        ClearLevel();
+        if(LevelObjects.childCount > 0)
+        {
+            ClearLevel();
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
         SpawnPlayer();
 
         for(int i = 3; i >= 1; i--)
@@ -107,7 +113,18 @@ public class GameManager : MonoBehaviour
     {
         for(int i = 0; i < LevelObjects.childCount; i++)
         {
-            Destroy(LevelObjects.GetChild(i).gameObject);
+            GameObject go = LevelObjects.GetChild(i).gameObject;
+
+            if(go.tag == "Enemy")
+            {
+                go.GetComponent<Enemy>().Die();
+            }
+            else
+            {
+                Destroy(go);
+            }
         }
+
+        enemyCount = 0;
     }
 }
