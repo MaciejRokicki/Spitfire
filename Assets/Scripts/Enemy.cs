@@ -12,11 +12,11 @@ public class Enemy : MonoBehaviour
     public GameObject EnemyBulletPrefab;
     public float bulletSpeed = 30.0f;
 
-    void Awake()
+    private void Awake()
     {
         rb = this.gameObject.GetComponent<Rigidbody2D>();
         particle = this.gameObject.GetComponent<ParticleSystem>();
-        Player = GameObject.Find("Player");
+        Player = GameObject.FindGameObjectWithTag("Player");
         
         foreach(Transform t in this.transform)
         {
@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         Vector3 target = Player.transform.position - this.transform.position;
 
@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
 
     private float timer = 0.0f;
 
-    void Update()
+    private void Update()
     {
         timer += Time.deltaTime;
 
@@ -51,10 +51,11 @@ public class Enemy : MonoBehaviour
     private void Shoot()
     {
         GameObject bullet = Instantiate(EnemyBulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
+        bullet.transform.SetParent(GameObject.Find("GameManager").GetComponent<GameManager>().LevelObjects);
         bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
     }
 
-    void OnTriggerEnter2D(Collider2D coll)
+    private void OnTriggerEnter2D(Collider2D coll)
     {
         if(coll.tag == "PlayerBullet" || coll.tag == "Wall")
         {
@@ -62,7 +63,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Die()
+    public void Die()
     {
         particle.Play();
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -70,5 +71,6 @@ public class Enemy : MonoBehaviour
         this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
         this.gameObject.GetComponent<TrailRenderer>().enabled = false;
         this.gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+        GameObject.Find("GameManager").GetComponent<GameManager>().enemyCount--;
     }
 }

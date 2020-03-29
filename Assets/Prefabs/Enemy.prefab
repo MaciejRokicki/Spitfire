@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 8223684078417256027}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,11 +107,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c04a8b3638a0b7e4baf1035f495330c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 500
+  movementSpeed: 600
   BulletSpawner: {fileID: 0}
   EnemyBulletPrefab: {fileID: 1818806329961056835, guid: 7bafb1a9d7b821f42b3fc8c1d42ba97a,
     type: 3}
-  bulletSpeed: 30
+  bulletSpeed: 60
 --- !u!212 &6997458982083727210
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3908,7 +3908,7 @@ ParticleSystem:
   CollisionModule:
     enabled: 0
     serializedVersion: 3
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0

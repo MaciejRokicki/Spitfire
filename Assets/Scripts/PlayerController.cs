@@ -2,6 +2,7 @@
 
 public class PlayerController : MonoBehaviour
 {
+    private GameManager gameManager;
     public Rigidbody2D rb;
     private ParticleSystem particle;
     public Camera mainCamera;
@@ -13,31 +14,32 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         rb = this.gameObject.GetComponent<Rigidbody2D>();
         particle = this.gameObject.GetComponent<ParticleSystem>();
         mainCamera = Camera.main;
     }
 
-    void Start()
+    private void Start()
     {
 
     }
 
     private float time = 0.0f;
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Quaternion rot = Quaternion.LookRotation(transform.position - mousePosition, Vector3.forward);
 
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
         rb.angularVelocity = 0;
-        transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 3.0f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 6.0f);
 
         rb.AddForce(gameObject.transform.up * movementSpeed);
     }
 
-    void Update()
+    private void Update()
     {
         time += Time.deltaTime;
 
@@ -52,12 +54,13 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         GameObject bullet = Instantiate(BulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
+        bullet.transform.SetParent(gameManager.LevelObjects);
         bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
     }
 
-    void OnTriggerEnter2D(Collider2D coll)
+    private void OnTriggerEnter2D(Collider2D coll)
     {
-        if(coll.tag == "EnemyBullet" || coll.tag == "Wall")
+        if(coll.tag == "EnemyBullet" || coll.tag == "Wall" || coll.tag == "Enemy")
         {
             this.Die();
         }
@@ -71,5 +74,11 @@ public class PlayerController : MonoBehaviour
         this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
         this.gameObject.GetComponent<TrailRenderer>().enabled = false;
         this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        gameManager.player = null;
+    }
+
+    public void OnParticleSystemStopped()
+    {
+        gameManager.NewGame();
     }
 }
