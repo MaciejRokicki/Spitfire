@@ -1,12 +1,14 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public TextMeshProUGUI CounterNewGameStart;
+
     public Transform LevelObjects;
     public GameObject PlayerPrefab;
     internal GameObject player;
-
     public GameObject EnemyPrefab;
     public int enemyCount = 0;
 
@@ -36,11 +38,15 @@ public class GameManager : MonoBehaviour
 
         SpawnPlayer();
 
+        CounterNewGameStart.gameObject.SetActive(true);
+
         for(int i = 3; i >= 1; i--)
         {
-            Debug.Log(i);
+            CounterNewGameStart.SetText(i.ToString());
             yield return new WaitForSeconds(1.0f);
         }
+
+        CounterNewGameStart.gameObject.SetActive(false);
 
         PlayerMovement();
         StartCoroutine(EnemySpawner());
