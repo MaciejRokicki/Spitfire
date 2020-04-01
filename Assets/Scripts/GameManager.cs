@@ -4,6 +4,7 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public Animator NewGameCounterBackgroundAnimator;
     public TextMeshProUGUI CounterNewGameStart;
 
     public Transform LevelObjects;
@@ -29,7 +30,9 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartGameCourtine()
     {
-        if(LevelObjects.childCount > 0)
+        NewGameCounterBackgroundAnimator.SetTrigger("newGame");
+
+        if (LevelObjects.childCount > 0)
         {
             ClearLevel();
 
@@ -38,15 +41,15 @@ public class GameManager : MonoBehaviour
 
         SpawnPlayer();
 
-        CounterNewGameStart.gameObject.SetActive(true);
-
         for(int i = 3; i >= 1; i--)
         {
             CounterNewGameStart.SetText(i.ToString());
+
+            if(i == 1)
+                NewGameCounterBackgroundAnimator.SetTrigger("hide");
+
             yield return new WaitForSeconds(1.0f);
         }
-
-        CounterNewGameStart.gameObject.SetActive(false);
 
         PlayerMovement();
         StartCoroutine(EnemySpawner());
@@ -54,15 +57,17 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator EnemySpawner()
     {
+        yield return new WaitForSeconds(1.0f);
+
         while(true)
         {
-            yield return new WaitForSeconds(1.0f);
-
             if(player == null)
                 yield break;
 
-            if(enemyCount + 1 <= 5)
+            if (enemyCount + 1 <= 5)
                 SpawnEnemy();
+
+            yield return new WaitForSeconds(2.0f);
         }
     }
 
@@ -81,7 +86,7 @@ public class GameManager : MonoBehaviour
     private void SpawnEnemy()
     {
         int randomBorder = Random.Range(0, 4);
-        
+
         Vector3 spawnPosition;
         float x = 0.0f;
         float y = 0.0f;
@@ -90,7 +95,7 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 x = -25.0f;
-                y = Random.Range(-13.5f, 13.5f);                
+                y = Random.Range(-13.5f, 13.5f);   
                 break;
 
             case 1:
