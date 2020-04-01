@@ -3,7 +3,7 @@
 public class Enemy : MonoBehaviour
 {
 
-    private bool isRead = false;
+    private bool isReady = false;
     private Rigidbody2D rb;
     private GameObject Player;
     public float movementSpeed = 40.0f;
@@ -44,14 +44,14 @@ public class Enemy : MonoBehaviour
 
     public void Move()
     {
-        this.isRead = true;
+        this.isReady = true;
         this.rb.AddForce(target.normalized * movementSpeed);
     }
 
     private float timer = 0.0f;
     private void Shoot()
     {
-        if(this.isRead)
+        if(this.isReady)
         {
             this.timer += Time.deltaTime;
 
@@ -67,9 +67,9 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        this.gameObject.GetComponent<Animator>().SetTrigger("death");
+        this.gameObject.GetComponent<Animator>().SetBool("isDied", true);
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        this.isRead = false;
+        this.isReady = false;
         this.gameObject.GetComponent<PolygonCollider2D>().enabled = false;
         GameObject.Find("GameManager").GetComponent<GameManager>().enemyCount--;
     }

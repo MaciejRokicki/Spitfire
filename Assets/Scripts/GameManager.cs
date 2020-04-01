@@ -30,14 +30,13 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartGameCourtine()
     {
-        NewGameCounterBackgroundAnimator.SetTrigger("newGame");
-
         if (LevelObjects.childCount > 0)
         {
             ClearLevel();
-
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.0f);
         }
+
+        NewGameCounterBackgroundAnimator.SetTrigger("newGame");
 
         SpawnPlayer();
 
@@ -95,7 +94,7 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 x = -25.0f;
-                y = Random.Range(-13.5f, 13.5f);   
+                y = Random.Range(-13.5f, 13.5f);
                 break;
 
             case 1:

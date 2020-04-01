@@ -51,10 +51,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    float time = 0.0f;
+    private float time = 0.0f;
 
     private void Shoot()
-    {          
+    {        
         if(!isDead)
         {
             time += Time.deltaTime;
@@ -72,7 +72,8 @@ public class PlayerController : MonoBehaviour
     public void Die()
     {
         this.isDead = true;
-        this.gameObject.GetComponent<Animator>().SetTrigger("death");
+        GameObject.Find("GameManager").GetComponent<GameManager>().player = null;
+        this.gameObject.GetComponent<Animator>().SetBool("isDied", true);
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
         gameManager.player = null;
     }

@@ -77,7 +77,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_FE9DFBC6: {r: 0, g: 4.5176473, b: 5.4588237, a: 0}
+    - Color_FE9DFBC6: {r: 0, g: 4.3574953, b: 4.867144, a: 0}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _BloomColor: {r: 0, g: 28.611765, b: 32, a: 0}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
