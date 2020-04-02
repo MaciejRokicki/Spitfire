@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         if (LevelObjects.childCount > 0)
         {
             ClearLevel();
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(2.0f);
         }
 
         NewGameCounterBackgroundAnimator.SetTrigger("newGame");

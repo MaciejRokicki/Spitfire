@@ -67,9 +67,9 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
+        this.isReady = false;
         this.gameObject.GetComponent<Animator>().SetBool("isDied", true);
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        this.isReady = false;
         this.gameObject.GetComponent<PolygonCollider2D>().enabled = false;
         GameObject.Find("GameManager").GetComponent<GameManager>().enemyCount--;
     }
