@@ -7,6 +7,7 @@ public class PlayerBullet : MonoBehaviour
         if(coll.tag == "Enemy")
         {
             coll.GetComponent<Enemy>().Die();
+            GameObject.Find("GameManager").GetComponent<GameManager>().IncreaseScore(100);
         }
 
         if(coll.tag == "Wall")

@@ -6,12 +6,16 @@ public class GameManager : MonoBehaviour
 {
     public Animator NewGameCounterBackgroundAnimator;
     public TextMeshProUGUI CounterNewGameStart;
+    public TextMeshProUGUI CurrentScoreText;
+    public TextMeshProUGUI AddedScoreText;
 
     public Transform LevelObjects;
     public GameObject PlayerPrefab;
     internal GameObject player;
     public GameObject EnemyPrefab;
     public int enemyCount = 0;
+
+    internal int score = 0;
 
     private void Awake()
     {
@@ -136,5 +140,14 @@ public class GameManager : MonoBehaviour
         }
 
         enemyCount = 0;
+        score = 0;
+    }
+
+    public void IncreaseScore(int score)
+    {
+        this.score += score;
+        CurrentScoreText.SetText(this.score.ToString());
+        AddedScoreText.SetText(score.ToString());
+        GameObject.Find("ScorePanel").GetComponent<Animator>().SetTrigger("showScoreAnimation");
     }
 }
