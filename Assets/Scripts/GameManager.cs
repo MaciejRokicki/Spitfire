@@ -6,8 +6,11 @@ public class GameManager : MonoBehaviour
 {
     public Animator NewGameCounterBackgroundAnimator;
     public TextMeshProUGUI CounterNewGameStart;
+
+    public Animator ScorePanelAnimator;
     public TextMeshProUGUI CurrentScoreText;
-    public TextMeshProUGUI AddedScoreText;
+
+    public RectTransform AddedScorePrefab;
 
     public Transform LevelObjects;
     public GameObject PlayerPrefab;
@@ -147,7 +150,18 @@ public class GameManager : MonoBehaviour
     {
         this.score += score;
         CurrentScoreText.SetText(this.score.ToString());
-        AddedScoreText.SetText(score.ToString());
-        GameObject.Find("ScorePanel").GetComponent<Animator>().SetTrigger("showScoreAnimation");
+
+        if(!ScorePanelAnimator.GetBool("showScoreAnimation"))
+        {
+            ScorePanelAnimator.ResetTrigger("showScoreAnimation");
+            ScorePanelAnimator.SetTrigger("showScoreAnimation");
+        }
+    }
+
+    public void SpawnAddedScore(Vector3 pos, int points)
+    {
+        RectTransform uiObj = Instantiate(AddedScorePrefab, Camera.main.WorldToScreenPoint(pos), Quaternion.identity, GameObject.Find("Canvas").transform);
+
+        uiObj.GetComponent<TextMeshProUGUI>().SetText(points.ToString());
     }
 }

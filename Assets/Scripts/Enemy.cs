@@ -3,6 +3,8 @@
 public class Enemy : MonoBehaviour
 {
 
+    private GameManager gm;
+
     private bool isReady = false;
     private Rigidbody2D rb;
     private GameObject Player;
@@ -14,6 +16,8 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         rb = this.gameObject.GetComponent<Rigidbody2D>();
         Player = GameObject.FindGameObjectWithTag("Player");
         
@@ -59,7 +63,7 @@ public class Enemy : MonoBehaviour
             {
                 this.timer = 0.0f;
                 GameObject bullet = Instantiate(EnemyBulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
-                bullet.transform.SetParent(GameObject.Find("GameManager").GetComponent<GameManager>().LevelObjects);
+                bullet.transform.SetParent(gm.LevelObjects);
                 bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
             }
         }
@@ -71,7 +75,7 @@ public class Enemy : MonoBehaviour
         this.gameObject.GetComponent<Animator>().SetBool("isDied", true);
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
         this.gameObject.GetComponent<PolygonCollider2D>().enabled = false;
-        GameObject.Find("GameManager").GetComponent<GameManager>().enemyCount--;
+        gm.enemyCount--;
     }
 
     public void Destroy()
