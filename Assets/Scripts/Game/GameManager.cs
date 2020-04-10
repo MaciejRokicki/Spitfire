@@ -1,11 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public Animator NewGameCounterBackgroundAnimator;
-    public TextMeshProUGUI CounterNewGameStart;
+    public TransitionEffect transitionEffect;
 
     public Animator ScorePanelAnimator;
     public TextMeshProUGUI CurrentScoreText;
@@ -22,12 +22,19 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-
+        GameObject.Find("TransitionPanel").GetComponent<Image>().material.SetFloat("_Scale", 0.4f);
     }
 
     private void Start()
     {
+        GameObject.Find("TransitionPanel").GetComponent<Image>().material.SetFloat("_Fade", 1.0f);
         NewGame();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
 
     public void NewGame()
@@ -37,25 +44,18 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartGameCourtine()
     {
+        StartCoroutine(transitionEffect.ShowEffect());
+
         if (LevelObjects.childCount > 0)
         {
             ClearLevel();
             yield return new WaitForSeconds(2.0f);
         }
 
-        NewGameCounterBackgroundAnimator.SetTrigger("newGame");
-
         SpawnPlayer();
 
-        for(int i = 3; i >= 1; i--)
-        {
-            CounterNewGameStart.SetText(i.ToString());
-
-            if(i == 1)
-                NewGameCounterBackgroundAnimator.SetTrigger("hide");
-
-            yield return new WaitForSeconds(1.0f);
-        }
+        StartCoroutine(transitionEffect.HideEffect());
+        yield return new WaitForSeconds(2.0f);
 
         PlayerMovement();
         StartCoroutine(EnemySpawner());
