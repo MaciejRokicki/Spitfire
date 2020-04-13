@@ -2,7 +2,6 @@
 
 public class AppManager : MonoBehaviour
 {
-
     public DeviceType deviceType;
 
     private void Awake()

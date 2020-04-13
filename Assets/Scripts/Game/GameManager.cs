@@ -5,7 +5,15 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public TransitionEffect transitionEffect;
+    GameObject borderRight;
+    GameObject borderTop;
+    GameObject borderLeft;
+    GameObject borderBot;
+
+    float spawnLeftX;
+    float spawnTopY;
+    float spawnRightX;
+    float spawnBotY;
 
     public Animator ScorePanelAnimator;
     public TextMeshProUGUI CurrentScoreText;
@@ -22,12 +30,39 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        GameObject.Find("TransitionPanel").GetComponent<Image>().material.SetFloat("_Scale", 0.4f);
+        borderRight = GameObject.Find("BorderRight");
+        borderTop = GameObject.Find("BorderTop");
+        borderLeft = GameObject.Find("BorderLeft");
+        borderBot = GameObject.Find("BorderBot");
+
+        Vector2 borderRightPosition = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0.0f));
+        borderRightPosition.x += borderRight.GetComponent<SpriteRenderer>().size.x / 4;
+        borderRight.transform.position = borderRightPosition;
+
+        Vector2 borderTopPosition = Camera.main.ScreenToWorldPoint(new Vector3(0.0f, Screen.height));
+        borderTopPosition.x = 0.0f;
+        borderTopPosition.y += borderTop.GetComponent<SpriteRenderer>().size.y / 3;
+        borderTop.transform.position = borderTopPosition;
+
+        Vector2 borderLeftPosition = Camera.main.ScreenToWorldPoint(Vector2.zero);
+        borderLeftPosition.x -= borderLeft.GetComponent<SpriteRenderer>().size.x / 4;
+        borderLeft.transform.position = borderLeftPosition;
+
+        Vector2 borderBotPosition = Camera.main.ScreenToWorldPoint(Vector2.zero);
+        borderBotPosition.x = 0.0f;
+        borderBotPosition.y -= borderBot.GetComponent<SpriteRenderer>().size.y / 3;
+        borderBot.transform.position = borderBotPosition;
+
+        spawnLeftX = borderLeft.transform.position.x + borderLeft.GetComponent<SpriteRenderer>().size.x / 2 + 1.0f;
+        spawnTopY = borderTop.transform.position.y - borderTop.GetComponent<SpriteRenderer>().size.y / 2 - 1.0f;
+        spawnRightX = borderRight.transform.position.x - borderRight.GetComponent<SpriteRenderer>().size.x / 2 - 1.0f;
+        spawnBotY = borderBot.transform.position.y + borderBot.GetComponent<SpriteRenderer>().size.y / 2 + 1.0f;
+
     }
 
     private void Start()
     {
-        GameObject.Find("TransitionPanel").GetComponent<Image>().material.SetFloat("_Fade", 1.0f);
+        GameObject.Find("TransitionEffect").GetComponent<Animator>().SetTrigger("Hide");
         NewGame();
     }
 
@@ -44,8 +79,6 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartGameCourtine()
     {
-        StartCoroutine(transitionEffect.ShowEffect());
-
         if (LevelObjects.childCount > 0)
         {
             ClearLevel();
@@ -54,7 +87,6 @@ public class GameManager : MonoBehaviour
 
         SpawnPlayer();
 
-        StartCoroutine(transitionEffect.HideEffect());
         yield return new WaitForSeconds(2.0f);
 
         PlayerMovement();
@@ -100,23 +132,23 @@ public class GameManager : MonoBehaviour
         switch(randomBorder)
         {
             case 0:
-                x = -25.0f;
-                y = Random.Range(-13.5f, 13.5f);
+                x = spawnLeftX;
+                y = Random.Range(-borderLeft.transform.position.y/2, borderLeft.transform.position.y/2);
                 break;
 
             case 1:
-                x = Random.Range(-25.0f, 25.0f);
-                y = 13.5f;
+                x = Random.Range(-borderTop.transform.position.x/2, borderTop.transform.position.x/2);
+                y = spawnTopY;
                 break;
 
             case 2:
-                x = 25.0f;
-                y = Random.Range(-13.5f, 13.5f);
+                x = spawnRightX;
+                y = Random.Range(-borderRight.transform.position.y / 2, borderRight.transform.position.y / 2);
                 break;
 
             case 3:
-                x = Random.Range(-25.0f, 25.0f);
-                y = -13.5f;
+                x = Random.Range(-borderBot.transform.position.x / 2, borderBot.transform.position.x / 2);
+                y = spawnBotY;
                 break;
         }
 
