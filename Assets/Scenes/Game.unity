@@ -582,6 +582,11 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 8381359061005299404, guid: 7d06777a85deaa448adaa65abea72afa,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8381359061005299405, guid: 7d06777a85deaa448adaa65abea72afa,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -747,6 +752,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Size.y
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381359061005299404, guid: 7d06777a85deaa448adaa65abea72afa,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8381359061005299405, guid: 7d06777a85deaa448adaa65abea72afa,
         type: 3}
@@ -1007,7 +1017,7 @@ Canvas:
   m_GameObject: {fileID: 1681415880}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 193395028}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1017,7 +1027,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!224 &1681415884
 RectTransform:
@@ -1076,6 +1086,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Size.y
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381359061005299404, guid: 7d06777a85deaa448adaa65abea72afa,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8381359061005299405, guid: 7d06777a85deaa448adaa65abea72afa,
         type: 3}
@@ -1308,8 +1323,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 27a69c6123e61f24b84b63532c616f2f, type: 3}
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1317,7 +1332,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.5
 --- !u!222 &1930446897
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1377,6 +1392,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381359061005299404, guid: 7d06777a85deaa448adaa65abea72afa,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8381359061005299405, guid: 7d06777a85deaa448adaa65abea72afa,
         type: 3}

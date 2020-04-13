@@ -2,7 +2,6 @@
 
 public class Enemy : MonoBehaviour
 {
-
     private GameManager gm;
 
     private bool isReady = false;
@@ -10,7 +9,7 @@ public class Enemy : MonoBehaviour
     private GameObject Player;
     public float movementSpeed = 40.0f;
 
-    public GameObject BulletSpawner;
+    public GameObject bulletSpawner;
     public GameObject EnemyBulletPrefab;
     public float bulletSpeed = 30.0f;
 
@@ -24,7 +23,7 @@ public class Enemy : MonoBehaviour
         foreach(Transform t in this.transform)
         {
             if(t.name == "BulletSpawner")
-                BulletSpawner = t.gameObject;
+                this.bulletSpawner = t.gameObject;
         }
     }
 
@@ -35,14 +34,14 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        Shoot();
+        this.Shoot();
     }
 
     private Vector3 target;
     private void Prepare()
     {
         target = Player.transform.position - this.transform.position;
-        float angle = Mathf.Atan2(target.y, target.x) *Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(target.y, target.x) * Mathf.Rad2Deg;
         this.transform.rotation = Quaternion.AngleAxis(angle - 90.0f, Vector3.forward);
     }
 
@@ -59,18 +58,19 @@ public class Enemy : MonoBehaviour
         {
             this.timer += Time.deltaTime;
 
-            if(timer >= 0.7f)
+            if(this.timer >= 0.7f)
             {
-                this.timer = 0.0f;
-                GameObject bullet = Instantiate(EnemyBulletPrefab, BulletSpawner.transform.position, this.gameObject.transform.rotation);
+                GameObject bullet = Instantiate(EnemyBulletPrefab, bulletSpawner.transform.position, this.gameObject.transform.rotation);
                 bullet.transform.SetParent(gm.LevelObjects);
                 bullet.GetComponent<Rigidbody2D>().velocity = transform.up * bulletSpeed;
+                this.timer = 0.0f;
             }
         }
     }
 
     public void Die()
     {
+        this.timer = -1.4f;
         this.isReady = false;
         this.gameObject.GetComponent<Animator>().SetBool("isDied", true);
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;

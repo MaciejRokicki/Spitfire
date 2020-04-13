@@ -5,15 +5,18 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    GameObject borderRight;
-    GameObject borderTop;
-    GameObject borderLeft;
-    GameObject borderBot;
+    private AppManager appManager;
+    private GameObject transitionEffect;
 
-    float spawnLeftX;
-    float spawnTopY;
-    float spawnRightX;
-    float spawnBotY;
+    private GameObject borderRight;
+    private GameObject borderTop;
+    private GameObject borderLeft;
+    private GameObject borderBot;
+
+    private float spawnLeftX;
+    private float spawnTopY;
+    private float spawnRightX;
+    private float spawnBotY;
 
     public Animator ScorePanelAnimator;
     public TextMeshProUGUI CurrentScoreText;
@@ -30,6 +33,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        appManager = GameObject.Find("AppManager").GetComponent<AppManager>();
+        transitionEffect = GameObject.Find("TransitionEffect");
+
         borderRight = GameObject.Find("BorderRight");
         borderTop = GameObject.Find("BorderTop");
         borderLeft = GameObject.Find("BorderLeft");
@@ -62,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        GameObject.Find("TransitionEffect").GetComponent<Animator>().SetTrigger("Hide");
+        transitionEffect.GetComponent<Animator>().SetTrigger("Hide");
         NewGame();
     }
 
@@ -175,6 +181,7 @@ public class GameManager : MonoBehaviour
         }
 
         enemyCount = 0;
+        HighScore(score);
         score = 0;
     }
 
@@ -195,5 +202,20 @@ public class GameManager : MonoBehaviour
         RectTransform uiObj = Instantiate(AddedScorePrefab, Camera.main.WorldToScreenPoint(pos), Quaternion.identity, GameObject.Find("Canvas").transform);
 
         uiObj.GetComponent<TextMeshProUGUI>().SetText(points.ToString());
+    }
+
+    private void HighScore(int score)
+    {
+        if(PlayerPrefs.HasKey("HighScore"))
+        {
+            if(this.score > PlayerPrefs.GetInt("HighScore"))
+            {
+                PlayerPrefs.SetInt("HighScore", this.score);
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetInt("HighScore", this.score);
+        }
     }
 }
