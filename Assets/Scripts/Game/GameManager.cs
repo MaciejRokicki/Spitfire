@@ -24,10 +24,14 @@ public class GameManager : MonoBehaviour
     public RectTransform AddedScorePrefab;
 
     public Transform LevelObjects;
-    public GameObject PlayerPrefab;
+    
     internal GameObject player;
+    public GameObject PlayerPrefab;
+
     public GameObject EnemyPrefab;
     public int enemyCount = 0;
+
+    public GameObject BonusScorePrefab;
 
     internal int score = 0;
 
@@ -129,21 +133,40 @@ public class GameManager : MonoBehaviour
 
     private void SpawnEnemy()
     {
+        Vector3 spawnPosition = RandomSpawnVector();
+
+        Instantiate(EnemyPrefab, spawnPosition, Quaternion.identity).transform.SetParent(LevelObjects);
+        enemyCount++;
+    }
+
+    public void SpawnBonusScore()
+    {
+        int rand = Random.Range(1, 11);
+
+        if(rand <= 2)
+        {
+            Vector3 spawnPosition = RandomSpawnVector();
+
+            Instantiate(BonusScorePrefab, spawnPosition, Quaternion.identity).transform.SetParent(LevelObjects);
+        }
+    }
+
+    private Vector3 RandomSpawnVector()
+    {
         int randomBorder = Random.Range(0, 4);
 
-        Vector3 spawnPosition;
         float x = 0.0f;
         float y = 0.0f;
 
-        switch(randomBorder)
+        switch (randomBorder)
         {
             case 0:
                 x = spawnLeftX;
-                y = Random.Range(-borderLeft.transform.position.y/2, borderLeft.transform.position.y/2);
+                y = Random.Range(-borderLeft.transform.position.y / 2, borderLeft.transform.position.y / 2);
                 break;
 
             case 1:
-                x = Random.Range(-borderTop.transform.position.x/2, borderTop.transform.position.x/2);
+                x = Random.Range(-borderTop.transform.position.x / 2, borderTop.transform.position.x / 2);
                 y = spawnTopY;
                 break;
 
@@ -158,10 +181,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        spawnPosition = new Vector3(x, y, 0.0f);
-
-        Instantiate(EnemyPrefab, spawnPosition, Quaternion.identity).transform.SetParent(LevelObjects);
-        enemyCount++;
+        return new Vector3(x, y, 0.0f);
     }
 
     private void ClearLevel()
@@ -174,6 +194,10 @@ public class GameManager : MonoBehaviour
             {
                 go.GetComponent<Enemy>().Die();
             }
+            if(go.tag == "BonusScore")
+            {
+                go.GetComponent<BonusScore>().Die();
+            }
             else
             {
                 Destroy(go);
@@ -181,7 +205,7 @@ public class GameManager : MonoBehaviour
         }
 
         enemyCount = 0;
-        HighScore(score);
+        HighScore();
         score = 0;
     }
 
@@ -199,23 +223,23 @@ public class GameManager : MonoBehaviour
 
     public void SpawnAddedScore(Vector3 pos, int points)
     {
-        RectTransform uiObj = Instantiate(AddedScorePrefab, Camera.main.WorldToScreenPoint(pos), Quaternion.identity, GameObject.Find("Canvas").transform);
+        RectTransform uiObj = Instantiate(AddedScorePrefab, pos, Quaternion.identity, GameObject.Find("Canvas").transform);
 
         uiObj.GetComponent<TextMeshProUGUI>().SetText(points.ToString());
     }
 
-    private void HighScore(int score)
+    private void HighScore()
     {
         if(PlayerPrefs.HasKey("HighScore"))
         {
-            if(this.score > PlayerPrefs.GetInt("HighScore"))
+            if(score > PlayerPrefs.GetInt("HighScore"))
             {
-                PlayerPrefs.SetInt("HighScore", this.score);
+                PlayerPrefs.SetInt("HighScore", score);
             }
         }
         else
         {
-            PlayerPrefs.SetInt("HighScore", this.score);
+            PlayerPrefs.SetInt("HighScore", score);
         }
     }
 }

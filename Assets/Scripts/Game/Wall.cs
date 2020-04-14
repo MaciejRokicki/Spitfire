@@ -9,6 +9,11 @@ public class Wall : MonoBehaviour
             coll.GetComponent<Enemy>().Die();
         }
 
+        if(coll.tag == "BonusScore")
+        {
+            coll.GetComponent<BonusScore>().Die();
+        }
+
         if(coll.tag == "Player")
         {
             coll.GetComponent<PlayerController>().Die();
