@@ -1058,7 +1058,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3af7e6c0b4b4884e91d23846708f5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joystick: {fileID: 1734794576}
+  joystick: {fileID: 1734794575}
   ScorePanelAnimator: {fileID: 961209796}
   CurrentScoreText: {fileID: 752614992}
   AddedScorePrefab: {fileID: 2328027096172729420, guid: d6fcca8aa6b6dad4a9bf9aa203c34f0d,
