@@ -2,6 +2,8 @@
 
 public class PlayerController : MonoBehaviour
 {
+    private AppManager appManager;
+
     private GameManager gameManager;
     public Rigidbody2D rb;
     public Camera mainCamera;
@@ -13,6 +15,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        appManager = GameObject.Find("AppManager").GetComponent<AppManager>();
+
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         rb = this.gameObject.GetComponent<Rigidbody2D>();
         mainCamera = Camera.main;
@@ -40,21 +44,29 @@ public class PlayerController : MonoBehaviour
     {
         if(!isDead)
         {
-            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Quaternion rot = Quaternion.LookRotation(transform.position - mousePosition, Vector3.forward);
+            if(appManager.deviceType == DeviceType.Desktop)
+            {
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Quaternion rot = Quaternion.LookRotation(transform.position - mousePosition, Vector3.forward);
 
-            transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
-            rb.angularVelocity = 0;
-            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 6.0f);
+                transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
+                rb.angularVelocity = 0;
+                transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 6.0f);
 
-            rb.AddForce(gameObject.transform.up * movementSpeed);
+                rb.AddForce(gameObject.transform.up * movementSpeed);
+            }
+
+            if(appManager.deviceType == DeviceType.Handheld)
+            {
+                rb.AddForce(GameObject.Find("Joystick").GetComponent<Joystick>().direction * movementSpeed);
+            }
         }
     }
 
     private float time = 0.0f;
 
     private void Shoot()
-    {        
+    {
         if(!isDead)
         {
             time += Time.deltaTime;

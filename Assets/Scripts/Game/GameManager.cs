@@ -1,11 +1,11 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     private AppManager appManager;
+    public GameObject joystick;
     private GameObject transitionEffect;
 
     private GameObject borderRight;
@@ -72,6 +72,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if(appManager.deviceType == DeviceType.Handheld)
+        {
+            joystick.SetActive(true);
+        }
+
         transitionEffect.GetComponent<Animator>().SetTrigger("Hide");
         NewGame();
     }
