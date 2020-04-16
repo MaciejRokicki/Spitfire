@@ -21,6 +21,16 @@ public class BonusScore : MonoBehaviour
         this.Prepare();
     }
 
+    private void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.tag == "Player")
+        {
+            this.Die();
+            gm.SpawnAddedScore(new Vector3(coll.transform.position.x, coll.transform.position.y + 1.5f, coll.transform.position.z), 500);
+            gm.IncreaseScore(500);
+        }
+    }
+
     private Vector3 target;
     private void Prepare()
     {
@@ -46,5 +56,4 @@ public class BonusScore : MonoBehaviour
     {
         Destroy(this.gameObject);
     }
-
 }

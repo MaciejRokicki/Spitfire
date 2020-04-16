@@ -44,22 +44,28 @@ public class PlayerController : MonoBehaviour
     {
         if(!isDead)
         {
-            if(appManager.deviceType == DeviceType.Desktop)
+            Quaternion rot = default;
+
+            if (appManager.deviceType == DeviceType.Desktop)
             {
                 Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Quaternion rot = Quaternion.LookRotation(transform.position - mousePosition, Vector3.forward);
-
-                transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
-                rb.angularVelocity = 0;
-                transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 6.0f);
-
-                rb.AddForce(gameObject.transform.up * movementSpeed);
+                rot = Quaternion.LookRotation(transform.position - mousePosition, Vector3.forward);
             }
-
             if(appManager.deviceType == DeviceType.Handheld)
             {
-                rb.AddForce(GameObject.Find("Joystick").GetComponent<Joystick>().direction * movementSpeed);
+                Joystick joystick = GameObject.Find("Joystick").GetComponent<Joystick>();
+                Vector3 direction = joystick.direction;
+                Vector3 forward = transform.position.normalized - direction.normalized;
+
+                if(forward != Vector3.zero)
+                    rot = Quaternion.LookRotation(forward, Vector3.forward);
             }
+
+            transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
+            rb.angularVelocity = 0;
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.fixedDeltaTime * 6.0f);
+
+            rb.AddForce(gameObject.transform.up * movementSpeed);
         }
     }
 

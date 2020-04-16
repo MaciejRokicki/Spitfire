@@ -9,7 +9,7 @@ public class Joystick : MonoBehaviour
     public Transform circle;
     public Transform outerCircle;
 
-    internal Vector2 direction;
+    internal Vector2 direction = Vector2.up;
 
     void Update()
     {
